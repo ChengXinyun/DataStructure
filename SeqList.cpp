@@ -286,18 +286,120 @@ bool mergeSeqList(SeqList l1, SeqList l2, SeqList &l){
  * 8. 已知在一维数组A[m+n]中依次存放两个线性表(a1,a2,a3,...,am)和(b1,b2,b3,...,bn)。
  * 试编写一个函数，将数组中两个顺序表的位置互换，即将(b1,b2,b3,...,bn)放在 (a1,a2,a3,...,am)的前面。 
  */
+void traverseSeqList(ElementType array[], int start, int end){
+	for(int i = start, j = end; i < j; i++, j--){
+		ElementType temp = array[i];
+		array[i] = array[j];
+		array[j] = temp;
+	}
+}
 
+void swapSeqList(ElementType array[], int m, int n){
+	traverseSeqList(array, 0, m + n - 1);
+	traverseSeqList(array, 0, n - 1);
+	traverseSeqList(array, n, n + m - 1);
+}
 
+/*
+ * 9. 线性表(a1,a2,a3,...,an)中的元素递增有序且按顺序存储于计算机内。
+ *    完成用最少时间在表中查找数值为 x 的元素，若找到则将其与后继元素位置相交换，
+ *    若找不到则将其插入表中并使表中元素仍递增有序。 
+ */
+void findX(SeqList &l, ElementType e){
+	// 二分法查找 
+	int left = 0;
+	int right = l.length - 1;
+	int mid;
+	while(left <= right){
+		mid = (right + left) / 2;
+		
+		// 如果找到 e , 交换其后继节点； 
+		if(l.data[mid] == e && mid != l.length - 1){
+			ElementType temp = l.data[mid];
+			l.data[mid] = l.data[mid + 1];
+			l.data[mid+1] = temp;
+			break;
+		} else if(l.data[mid] > e){
+			// 左半部分查找 
+			right = mid - 1;
+		} else {
+			// 右半部分查找 
+			left = mid + 1;
+		}	
+	}
+	// 没有找到就插入 
+	if(left > right){
+		int i;
+		for(i = l.length - 1; i > right; i--){
+			l.data[i + 1] = l.data[i];
+		}
+		l.data[i + 1] = e;
+		l.length++;
+	}
+} 
 
+/*
+ * 10.(2010统考真题) 设将 n (n > 1)个整数存放到一维数组 R 中, 设计一个在时间和
+ *   空间两个方面都尽可能高效的算法。将 R 中保存的序列循环左移 p (0 < p < n)个位置   
+ *  与第八题一样，先整体逆置，然后再局部逆置。时间复杂度 O(n), 空间复杂度 O(1); 
+ */ 
+
+/*
+ * 11.(2011统考真题) 一个长度为 L (L >= 1) 的升序序列 S，处在第[L / 2]个位置的数称为 S 的中位数。
+ * 现有两个等长升序序列 A 和 B，设计一个在时间和空间两个方面都尽可能高效的算法找出A和B的中位数。 
+ */ 
+
+//时间复杂度 O(n), 空间复杂度 O(1);  
+int findMid_1(int a[], int b[], int length){
+	int i = 0;
+	int j = 0;
+	int mid;
+	// 遍历两个序列，只需要遍历序列长度就可以找到； 
+	while(length--){
+		if(a[i] < b[j]){
+			mid = a[i];
+			i++;			
+		} else {
+			mid = b[j];
+			j++;
+		}	
+	}
+	return mid;
+} 
+
+// 
+int findMid_2(int a[], int b[], int length){
+	int s1 = 0, d1 = length - 1;
+	int s2 = 0, d2 = length - 1;
+	int mid1, mid2;
+	while(s1 != d1 || s2 != d2){
+		mid1 = (s1 + d1) / 2;
+		mid2 = (s2 + d2) / 2;
+		if(a[mid1] == b[mid2]){
+			return a[mid1];
+		}
+		if(a[mid1] < b[mid2]){
+			s1 = mid1;
+			d2 = mid2;
+		} else {
+			s2 = mid2;
+			d1 = mid1;
+		}
+	}
+	return a[mid1] < b[mid2] ? a[mid1] : b[mid2];
+} 
 
 int main(){
 	SeqList l;
 	InitList(l);
-	int num[10] = {1,1,1,1,1,1,1,1,1,1};
+	int num[10] = {1,2,3,4,5,6,7,8,9,10};
 	for(int i = 0; i < 10; i++){
 		InsertToList(l, i + 1, num[i]);	
 	}
-	delRepeatValue(l);
+	findX(l, 14);
 	TraverseSeqList(l);
+	int a[5] = {11,13,15,17,19};
+	int b[5] = {2,4,6,8,11};
+	cout << findMid_2(a,b,5) << endl; 
 }
 
