@@ -367,7 +367,7 @@ int findMid_1(int a[], int b[], int length){
 	return mid;
 } 
 
-// 
+// 时间复杂度 O(logN),空间复杂度 O(1) 
 int findMid_2(int a[], int b[], int length){
 	int s1 = 0, d1 = length - 1;
 	int s2 = 0, d2 = length - 1;
@@ -378,16 +378,95 @@ int findMid_2(int a[], int b[], int length){
 		if(a[mid1] == b[mid2]){
 			return a[mid1];
 		}
+		
+		// 舍弃区间时，保持对称； 
 		if(a[mid1] < b[mid2]){
-			s1 = mid1;
-			d2 = mid2;
+			if((s1 + d1) % 2 == 0){ // 元素个数为奇数 (0+4) 
+				s1 = mid1;
+				d2 = mid2;
+			} else {   
+				s1 = mid1 + 1;
+				d2 = mid2;	
+			}
 		} else {
-			s2 = mid2;
-			d1 = mid1;
+			if((s2 + d2) % 2 == 0){
+				s2 = mid2;
+				d1 = mid1;
+			} else {
+				s2 = mid2 + 1;
+				d1 = mid1;	
+			}
 		}
 	}
-	return a[mid1] < b[mid2] ? a[mid1] : b[mid2];
+	return a[s1] < b[s2] ? a[s1] : b[s2]; // 最后只剩一个，哪个小就是中位数 
 } 
+
+/*
+ * 12. 已知一个整数序列 A = (a0,a1,...,an-1),其中 0 <= ai < n(0 <= i < n). 
+ *     寻找主元素：在序列中出现超过半数的数； 
+ *     A = (0,5,5,3,5,1,5,7) 则 5 是主元素； 
+ */ 
+// 超过半数的元素，例如 8 个元素，主元素要出现大于 4 次，即至少出现 5 次；
+// 八个空位分成四份，相当于至少5个球放到四个桶，至少有一个里面有两个； 
+int findMain(int A[], int n){
+	int i;
+	int m = A[0]; // 先选取第一个作为主元素
+	int count = 1;   // 记录主元素出现的次数
+	
+	// 寻找可能存在的主元素;时间复杂度 O(n) 
+	for(i = 1; i < n; i++){
+		if(A[i] == m){
+			count++; // 计数主元素 
+		} else {
+			if(count > 0){      
+				count--;
+			} else { // 更换元素 
+				m = A[i];
+				count = 1;
+			}
+		}
+	}
+	// 重新统计出现的次数，是否大于 n/2;时间复杂度 O(n); 
+	if(count > 0){
+		for(i = count = 0; i < n; i++){
+			if(A[i] == m){
+				count++;
+			}
+		}
+	}
+	if(count > n / 2)
+		return m;
+	return -1;
+} 
+
+/*
+ * 13. 给定一个含 n(n >= 1) 个整数的数组，请设计一个在时间上尽可能高效的算法，找出数组中未出现的最小正整数。 
+ */ 
+int findMinInterger(int A[], int n){
+	int *B = new int[n]; // 用B数组标记是否出现; 
+	// int* B = (int *)malloc(sizeof(int)*n); 
+	int i;
+	
+	// memset(B,0,sizeof(int)*n)可以用这个赋值 
+	for(i = 0; i < n; i++){
+		B[i] = 0; // 全部赋初始值为 0; 
+	}
+	// 遍历寻找是否出现 
+	for(i = 0; i < n; i++){
+		if(A[i] > 0 && A[i] <= n){
+			B[A[i] - 1] = 1;
+		}
+	}
+	// 寻找未出现的那个正整数; 
+	for(i = 0; i < n; i++){
+		if(B[i] == 0){
+			break;
+		}
+	}
+	// 若找到了，则 i 表示的是 A[i] - 1, 返回 i + 1; 
+	// 若没有找到，则 i = n 返回最小正整数是 n + 1; 
+	return i + 1; 
+}
 
 int main(){
 	SeqList l;
@@ -398,8 +477,8 @@ int main(){
 	}
 	findX(l, 14);
 	TraverseSeqList(l);
-	int a[5] = {11,13,15,17,19};
+	int a[5] = {1,13,15,17,19};
 	int b[5] = {2,4,6,8,11};
-	cout << findMid_2(a,b,5) << endl; 
+	cout << findMinInterger(a, 5) << endl; 
 }
 
