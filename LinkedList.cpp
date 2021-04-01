@@ -37,6 +37,34 @@ LNode* headInsert(LNode *head){
 	return head; 
 } 
 
+// 头插法建立不带头结点的单链表
+LNode* headInsert_1(LNode *head){
+	LNode *s;
+	int x;
+	cin >> x;
+	while(x != 9999){ // 输入9999结束插入 
+		s = new LNode();
+		s->data = x;
+		if(head != NULL){
+			s->next = head;
+		} else {
+			s->next = NULL;
+		}
+		head = s;
+		cin >> x;
+	}
+	return head; 
+} 
+// 遍历不带头结点的单链表
+void traverseLinkedList_1(LNode* head){
+	if(head == NULL)	return;
+	LNode* p = head;
+	while(p){
+		cout << p->data << endl;
+		p = p->next;
+	} 
+} 
+
 // 尾插法建立带头结点的单链表，需要在尾部添加一个尾指针；
 LNode* tailInsert(LNode *head){
 	LNode *s;                      // 指向每次需要插入的结点的指针 ;
@@ -133,15 +161,33 @@ int lengthOfLinkedList(LNode* head){
 	return length;								// 返回链表的长度; 
 } 
 
+/*
+ * 1. 设计一个递归算法，删除不带头结点的单链表 L 中所有值为 x 的结点; 
+ */
+void deleteX(LNode* &head, int x){	//	这里要加引用！！！ 
+	if(head == NULL)	return;		//	递归的出口 
+	if(head->data == x){			//	找到等于 x 的结点 
+		LNode* q = head;			//
+		head = head->next;			// 	这里的 head 其实是上一层递归的 head->next，因为是引用，所以链表并不会断; 
+		delete q;					//	释放符合条件的结点 
+		deleteX(head, x);			//	从这个结点开始递归 
+	} else {	
+		deleteX(head->next, x);		
+	}
+}
 
 int main(){
-	LNode *head;
-	head = tailInsert(head);
+	LNode *head = NULL;
+	head = headInsert_1(head);
+	traverseLinkedList_1(head);
+	deleteX(head, 3);
+	traverseLinkedList_1(head);
+	// head = tailInsert(head);
 	// cout << getLNodeByIndex(head, 3)->data << endl;
 	// cout << getLNodeByValue(head, 3)->data << endl;
 	// insertLNode(head, 2);
 	// deleteTheLNode(getLNodeByIndex(head, 3));
-	traverseLinkedList(head);
-	cout << lengthOfLinkedList(head) << endl;
+	// traverseLinkedList(head);
+	// cout << lengthOfLinkedList(head) << endl;	
 }
 
