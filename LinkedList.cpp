@@ -176,12 +176,105 @@ void deleteX(LNode* &head, int x){	//	这里要加引用！！！
 	}
 }
 
+/*
+ * 2. 在带头结点的单链表 L 中，删除所有值为 x 的结点，并释放其空间，假设值为 x 的结点不唯一，试编写算法以实现上述操作。 
+ *    这一题中我使用与之后的元素进行交换的想法，但是对于最后一个数无法操作，无法与之后的数进行交换。
+ *	  因此可以采用两个指针，一个指向前面的指针，一个指向当前指针。 
+ */
+void deleteX_1(LNode* head, int x){
+	LNode* front = head;			// 前驱指针 
+	LNode* p = head->next;			// 当前检查的指针 
+	while(p){
+		if(p->data == x){			// 检查当前结点值是否为 x 
+			LNode* q = p;			// 使 q 指向当前结点，便于之后的删除操作 
+			p = p->next;			// p 指向下一个结点 
+			front->next = p;		// 前驱指针后移 
+			delete q;				// 删除当前等于 x 的节点 
+		} else {
+			front = p;				// 如果不等于 x，两个指针都向后移动一个位置 
+			p = p->next;
+		}
+	}
+}
+
+/*
+ * 3. 设 L 为带头结点的单链表，编写算法实现从尾到头反向输出每个节点的值。 
+ *    使用递归的方法实现，其实相当于把数据依次放进栈中，然后再从栈中倒出来。 
+ */ 
+void reverseOutput(LNode* &head){
+	if(head->next == NULL)	return;			// 递归出口 
+	reverseOutput(head->next);				// 递归下一个 
+	cout << head->next->data << endl;		// 输出 
+} 
+
+/*
+ * 4. 使编写在带头结点的单链表 L 中删除一个最小值结点的高效算法(假设最小值结点使是唯一的)。 
+ */
+void deleteMin(LNode* &head){
+	LNode* pre = head;						// pre 指向最小元素的前一个 
+	LNode* p = head->next;					// 默认一开始头结点的下一个最小 
+	while(p->next != NULL){
+		if(p->next->data < pre->next->data){// 比较 
+			pre = p;
+		}
+		p = p->next; 
+	}
+	LNode* d = pre->next;					// 删除最后找到的 pre 的下一个元素 
+	pre->next = d->next;
+	delete d;
+} 
+// 编写在 不 带头结点的单链表 L 中删除一个最小值结点的高效算法(假设最小值结点使是唯一的)。
+// 没有条件，创造条件！如果有第二个结点，使第二个结点为初始最小值结点。 
+void deleteMin_1(LNode* &head){
+	LNode* pre = head;
+	LNode* p = head->next;
+	if(p){
+		if(pre->data < p->data){
+			int temp = pre->data;
+			pre->data = p->data;
+			p->data = temp;
+		}
+	} else {
+		delete p;
+		return;
+	}
+	while(p->next != NULL){
+		if(p->next->data < pre->next->data){// 比较 
+			pre = p;
+		}
+		p = p->next; 
+	}
+	LNode* d = pre->next;					// 删除最后找到的 pre 的下一个元素 
+	pre->next = d->next;
+	delete d;	
+} 
+
+/*
+ * 5. 试编写算法将带头结点的单链表就地逆置 -> 辅助空间复杂度为 O(1) 
+ */
+void reverseLinkedList(LNode* &head){
+	LNode* p = head->next;
+	LNode* r = p->next;
+	p->next = NULL;
+	while(r != NULL){
+		LNode* pre = p;
+		p = r;
+		r = r->next;
+		p->next = pre;
+	}
+	head->next = p;
+}
+
+
 int main(){
 	LNode *head = NULL;
-	head = headInsert_1(head);
-	traverseLinkedList_1(head);
-	deleteX(head, 3);
-	traverseLinkedList_1(head);
+	head = headInsert(head);
+	traverseLinkedList(head);
+	// deleteX_1(head, 3);
+	// reverseOutput(head);
+	// deleteMin_1(head);
+	reverseLinkedList(head);
+	traverseLinkedList(head);
 	// head = tailInsert(head);
 	// cout << getLNodeByIndex(head, 3)->data << endl;
 	// cout << getLNodeByValue(head, 3)->data << endl;
