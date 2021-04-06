@@ -265,6 +265,90 @@ void reverseLinkedList(LNode* &head){
 	head->next = p;
 }
 
+/*
+ * 6. 有一个带头结点的单链表 L ，设计一个算法使其元素递增有序。 
+ * 插入排序，时间复杂度 O(n^2).
+ * 还可以复制到数组中，排序好之后再复制到链表中。 
+ */
+void sort(LNode* &head){
+	LNode* p = head->next, *pre;
+	if(p == NULL)	return;
+	LNode* r = p->next;
+	p->next = NULL;
+	p = r;
+	while(p){
+		r = p->next;
+		pre = head;
+		while(pre->next && pre->next->data < p->data){
+			pre = pre->next;
+		}
+		p->next = pre->next;
+		pre->next = p;
+		p = r;
+	}
+} 
+
+/*
+ * 7. 设在一个带头结点的单链表中所有元素结点的数据值无序，试编写一个函数
+ *    删除表中所有介于给定的两个值（作为函数参数给出）之间的元素。 
+ */
+void deleteXY(LNode* &head, int x, int y){
+	LNode* p = head->next;
+	LNode* pre = head;
+	while(p){
+		if(p->data > x && p->data < y){
+			pre->next = p->next;
+			delete p;
+			p = pre->next;
+		} else {
+			pre = p;
+			p = p->next;
+		}
+	}
+} 
+
+/*
+ * 8. 给定两个单链表，编写算法找出两个链表的公共结点。 
+ */
+LNode* findCommonNode(LNode* &head1, LNode* &head2){
+	int l1 = 0;
+	int l2 = 0;
+	LNode* p1 = head1->next;
+	LNode* p2 = head2->next; 
+	while(p1){
+		l1++;
+		p1 = p1->next; 
+	}
+	while(p2){
+		l2++;
+		p2 = p2->next;
+	}
+	p1 = head1->next;
+	p2 = head2->next; 
+	if(l1 > l2){
+		int k = l1 - l2;
+		while(k--){
+			p1 = p1->next;		
+		}
+	} else {
+		int k = l2 - l1;
+		while(k--){
+			p2 = p2->next;		
+		}
+	}
+	while(p1 != NULL){
+		if(p1 == p2){
+			return p1;
+		} else {
+			p1 = p1->next;
+			p2 = p2->next;
+		}
+	}
+	return NULL;
+} 
+
+
+
 
 int main(){
 	LNode *head = NULL;
@@ -273,7 +357,8 @@ int main(){
 	// deleteX_1(head, 3);
 	// reverseOutput(head);
 	// deleteMin_1(head);
-	reverseLinkedList(head);
+	// reverseLinkedList(head);
+	// deleteXY(head, 2, 4);
 	traverseLinkedList(head);
 	// head = tailInsert(head);
 	// cout << getLNodeByIndex(head, 3)->data << endl;
