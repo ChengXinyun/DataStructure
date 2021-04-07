@@ -347,19 +347,75 @@ LNode* findCommonNode(LNode* &head1, LNode* &head2){
 	return NULL;
 } 
 
+/*
+ * 9. 给定一个带头结点的单链表，按递增次序输出单链表中的数据元素，并且释放结点所占的存储空间。 
+ */
+void sortAndDelete(LNode* &head){
+	LNode* pre;					// 指向需要删除结点的前驱结点 
+	LNode* p;					// 遍历 
+	LNode* d;					// 指向删除的结点 
+	while(head->next){			// 每次遍历直到链表为空为止
+		pre = head;				 
+		p = head->next;		
+		while(p->next){				
+			if(p->next->data < pre->next->data){
+				pre = p;		
+			} 
+			p = p->next;	 
+		}
+		cout << pre->next->data << endl;
+		d = pre->next;
+		pre->next = d->next;
+		delete d;
+	}
+	delete head;
+} 
 
-
+/*
+ * 10. 将一个带头结点的单链表 A 分解为两个带头结点的单链表 A 和 B，
+ *     使得 A 表中含有原表中序号为奇数的元素，而 B 表中含有原表中序号为偶数的元素，
+ *     且保持其相对顺序不表。 
+ */
+LNode* createTwoList(LNode* &A){
+	LNode* B = new LNode;
+	B->next = NULL;
+	LNode* ra = A;
+	LNode* rb = B;
+	LNode* p = A->next;
+	A->next = NULL;
+	while(p){
+		rb->next = p->next;
+		rb = p->next;
+		ra->next = p;
+		ra = p;
+		if(p->next){
+			p = p->next->next;
+		} else {
+			break;
+		}
+	}
+	if(ra)
+		ra->next = NULL;
+	if(rb)
+		rb->next = NULL;
+	return B;
+} 
 
 int main(){
 	LNode *head = NULL;
 	head = headInsert(head);
 	traverseLinkedList(head);
+	cout << "------------"<<endl;
 	// deleteX_1(head, 3);
 	// reverseOutput(head);
 	// deleteMin_1(head);
 	// reverseLinkedList(head);
 	// deleteXY(head, 2, 4);
+	// sortAndDelete(head);
+	LNode* B = createTwoList(head);
 	traverseLinkedList(head);
+	cout << "------------"<<endl;
+	traverseLinkedList(B);
 	// head = tailInsert(head);
 	// cout << getLNodeByIndex(head, 3)->data << endl;
 	// cout << getLNodeByValue(head, 3)->data << endl;
