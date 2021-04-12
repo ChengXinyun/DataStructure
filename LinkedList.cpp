@@ -401,6 +401,28 @@ LNode* createTwoList(LNode* &A){
 	return B;
 } 
 
+/*
+ * 11.  
+ */
+LNode* discreat(LNode* &A){
+	LNode* B = new LNode();
+	B->next = NULL;
+	LNode* p = A->next, *q;
+	LNode* ra = A;
+	while(p){
+		ra->next = p;
+		ra = p;
+		if(p){
+			q = p->next;
+		}
+		p->next = B->next;
+		B->next = p;
+		p = q;
+	}
+	ra->next = NULL;
+	return B;
+}
+
 int main(){
 	LNode *head = NULL;
 	head = headInsert(head);
