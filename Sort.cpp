@@ -105,6 +105,63 @@ void QuickSort(int num[], int low, int high){
 }
 
 
+/*
+ * 选择排序
+ * 1. 简单选择排序
+ * 2. 堆排序 
+ */
+
+// 简单选择排序
+void SelectSort(int num[], int n){
+	for(int i = 0; i < n - 1; i++){
+		int min = i;
+		for(int j = i + 1; j < n; j++){
+			if(num[j] < num[min])	min = j;
+		}
+		if(min != i){
+			int temp = num[i];
+			num[i] = num[min];
+			num[min] = temp;
+		}
+	}
+} 
+
+// 堆排序
+// 将以 k 为根的子树进行调整 
+void HeapAdjust(int num[], int k, int len){
+	int temp = num[k];
+	for(int i = 2 * k + 1; i < len; i = 2 * i + 1){
+		if(i < len - 1 && num[i] < num[i + 1]){
+			i++;
+		}
+		if(temp >= num[i])	break;
+		else{
+			num[k] = num[i];
+			k = i;
+		}
+	}
+	num[k] = temp;	
+} 
+
+// 建立大根堆
+void BuildMaxHeap(int num[], int len){
+	for(int i = len / 2 - 1; i >= 0; i--){
+		HeapAdjust(num, i, len);
+	}
+}
+
+// 堆排序算法
+void HeapSort(int num[], int len){
+	BuildMaxHeap(num, len);
+	for(int i = len - 1; i > 0; i--){
+		int temp = num[i];
+		num[i] = num[0];
+		num[0] = temp;
+		HeapAdjust(num, 0, i); 
+	}
+} 
+
+
 // 输出数组 
 void display(int num[], int n){
 	for(int i = 0; i < n; i++){
@@ -119,6 +176,8 @@ int main(){
 	//HalfInsertSort(num, 10);
 	//ShellSort(num, 10);
 	//BubbleSort(num, 10);
-	QuickSort(num, 0, 9);
+	//QuickSort(num, 0, 9);
+	//SelectSort(num, 10);
+	HeapSort(num, 10);
 	display(num, 10);
 }
