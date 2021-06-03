@@ -161,6 +161,52 @@ void HeapSort(int num[], int len){
 	}
 } 
 
+// 二路归并排序
+void Merge(int num[], int low, int mid, int high){
+	int n1 = mid - low + 1;
+	int n2 = high - mid;
+	
+	// int* L = (int *)malloc(sizeof(int) * n1);
+	// int* R = (int *)malloc(sizeof(int) * n2);
+	int *L = new int[n1];
+	int *R = new int[n2];
+	
+	int i, j;
+	for(i = 0; i < n1; i++){
+		L[i] = num[low + i];
+	}
+	for(j = 0; j < n2; j++){
+		R[j] = num[mid + 1 + j];
+	}
+	
+	i = j = 0;
+	
+	int k = low;
+	while(i < n1 && j < n2){
+		if(L[i] > R[j])	num[k++] = R[j++];
+		else	num[k++] = L[i++];
+	}
+	
+	while(i < n1){
+		num[k++] = L[i++];
+	}
+	while(j < n2){
+		num[k++] = R[j++];
+	}
+	
+	delete L, R;
+	// free(L);
+	// free(R);
+} 
+
+void MergeSort(int num[], int low, int high){
+	if(low < high){
+		int mid = (low + high) / 2;
+		MergeSort(num, low, mid);
+		MergeSort(num, mid + 1, high);
+		Merge(num, low, mid, high);
+	}
+}
 
 // 输出数组 
 void display(int num[], int n){
@@ -178,6 +224,7 @@ int main(){
 	//BubbleSort(num, 10);
 	//QuickSort(num, 0, 9);
 	//SelectSort(num, 10);
-	HeapSort(num, 10);
+	//HeapSort(num, 10);
+	MergeSort(num, 0, 9);
 	display(num, 10);
 }
