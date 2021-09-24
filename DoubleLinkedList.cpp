@@ -3,12 +3,13 @@
 using namespace std;
 
 struct DNode{
-	int data;		// Êý¾ÝÓò 
-	DNode* prior;	// Ç°ÇýÖ¸Õë 
-	DNode* next;	// ºó¼ÌÖ¸Õë 
+	int data;		// æ•°æ®
+	DNode* prior;	// å‰é©± 
+	DNode* next;	// åŽç»§ 
+	int freq;		// è®¿é—®é¢‘åº¦
 };
 
-// Ë³Ðò±éÀúÊä³ö
+// éåŽ†é“¾è¡¨
 void traverseLinkedList(DNode *head){
 	DNode *temp = head;
 	while(temp->next != NULL){
@@ -17,26 +18,28 @@ void traverseLinkedList(DNode *head){
 	}
 }
 
-// Í·²å·¨½¨Á¢´øÍ·½áµãµÄË«Á´±í
+// å¤´æ’æ³•
 DNode* headInsert(DNode *head){
 	DNode *s;
 	int x;
-	head = new DNode(); // ´´½¨Í·½Úµã 
+	head = new DNode(); // å¤´ç»“ç‚¹ 
 	head->next = NULL;
 	head->prior = NULL;
 	cin >> x;
-	while(x != 9999){ // ÊäÈë9999½áÊø²åÈë 
+	while(x != 9999){ //  
 		s = new DNode();
+		s->freq = 0;
 		s->data = x;
 		s->next = head->next;
 		s->prior = head;
+		if(head->next != nullptr)	head->next->prior = s;
 		head->next = s;
 		cin >> x;
 	}
 	return head; 
 }
 
-// ÔÚ¸ø¶¨½áµã p Ö®ºó²åÈëÐÂ½áµã q
+// åŒå‘é“¾è¡¨çš„æ’å…¥
 void insertDNodeAfter(DNode* p, DNode* q){
 	q->next = p->next;
 	q->next->prior = p;
@@ -44,7 +47,7 @@ void insertDNodeAfter(DNode* p, DNode* q){
 	p->prior = q;
 } 
 
-// É¾³ý¸ø¶¨½áµã p µÄºó¼Ì½áµã
+// åŒå‘é“¾è¡¨çš„åˆ é™¤
 void deleteDNodeAfter(DNode* p){
 	DNode* q = p->next;
 	if(q){
@@ -54,10 +57,41 @@ void deleteDNodeAfter(DNode* p){
 	}
 } 
 
+/*
+ * 20. è®¾å¤´æŒ‡é’ˆä¸º L çš„å¸¦å¤´ç»“ç‚¹çš„éžå¾ªçŽ¯åŒå‘é“¾è¡¨ï¼ŒLocate(L, x)å¢žåŠ è®¿é—®é¢‘åº¦freq,æŒ‰ç…§freqéžå¢žçš„é¡ºåºæŽ’åˆ—ï¼Œè°ƒæ•´é“¾è¡¨ï¼›
+ */
+DNode* Locate(DNode* &L, int x){
+	DNode* p = L->next;
+	while(p != nullptr){
+		if(p->data == x)	break;
+		p = p->next;
+	}
+	if(p == nullptr){
+		cout << "ä¸å­˜åœ¨å€¼ä¸º "<< x <<" çš„ç»“ç‚¹" << endl;
+		return L;
+	}
+	p->freq++;
+	if(p->next != nullptr)	p->next->prior = p->prior;
+	p->prior->next = p->next;
+	DNode* q = p->prior;
+	while(q != L){
+		if(q->freq > p->freq)	break;
+		q = q->prior;	
+	}
+	q->next->prior = p;
+	p->next = q->next;
+	q->next = p;
+	p->prior = q;
+	return p;
+}
 
 int main(){
 	DNode* head;
 	head = headInsert(head);
+	traverseLinkedList(head);
+	DNode* p = Locate(head, 3);
+	DNode* p1 = Locate(head, 3);
+	DNode* p2 = Locate(head, 4);
 	traverseLinkedList(head);
 	return 0;
 }

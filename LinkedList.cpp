@@ -402,7 +402,8 @@ LNode* createTwoList(LNode* &A){
 } 
 
 /*
- * 11.  
+ * 11. 设 C = {a1,b1,a2,b2,...,an,bn}为线性表，采用带头结点的单链表存放，将其拆分为两个线性表 A = {a1,a2,a3,...,an} 和 B = {bn,bn-1,bn-2,...,b1};
+ * 与上一题不同的是采用的是头插法，导致顺序逆置；
  */
 LNode* discreat(LNode* &A){
 	LNode* B = new LNode();
@@ -423,21 +424,179 @@ LNode* discreat(LNode* &A){
 	return B;
 }
 
+/*
+ * 12. 在一个递增有序的线性表中，有数值相同的元素存在，若存储形式为单链表，设计算法去除相同的元素，使表中不再有重复的元素；
+ */
+void del_same(LNode* &head){
+	if(head->next == nullptr || head->next->next == nullptr)	return;	// 如果不含节点或者只有一个节点，直接返回；
+	LNode* p = head->next;												// p 工作指针，用来扫描；
+	LNode* q;															// q 作为 p 的后继，用来判断值是否相等，相等的话则删除；
+	while(p->next){
+		q = p->next;
+		if(p->data == q->data){
+			p->next = q->next;
+			delete q;
+		} else {
+			p = p->next;	
+		}
+	}
+}
+
+/*
+ * 13. 假设有两个按元素值递增次序排列的线性表，均以单链表的形式存储，请编写算法将其合并为一个按元素值递减次序排列的单链表，并要求利用原来两个链表的节点存放归并后的单链表；
+ */
+void mergeList(LNode* &A, LNode* &B){	
+	LNode* LA = A->next;
+	LNode* LB = B->next;
+	LNode* head = A;	// 新链表的头
+	head->next = NULL;
+	LNode* r;
+	while(LA && LB){
+		if(LA->data < LB->data){
+			r = LA->next;
+			LA->next = head->next;
+			head->next = LA;
+			LA = r;
+		} else {
+			r = LB->next;
+			LB->next = head->next;
+			head->next = LB;
+			LB = r;
+		}
+	}
+	if(LA == nullptr)	LA = LB;
+	while(LA){
+		r = LA->next;
+		LA->next = head->next;
+		head->next = LA;
+		LA = r;
+	}	
+	delete B;
+}
+
+/*
+ * 14. 设 A 和 B 是两个带头结点的单链表，其中元素递增有序，设计一个算法从 A 和 B 中的公共元素产生单链表 C，要求不破坏 A 和 B 的节点；
+ */ 
+void commonNode(LNode* &A, LNode* &B, LNode* &C){
+	LNode* LA = A->next;
+	LNode* LB = B->next;
+	C->next = nullptr;
+	LNode* tail = C;
+	if(LA == nullptr || LB == nullptr)	return;
+	while(LA != nullptr && LB != nullptr){
+		if(LA->data == LB->data){
+			LNode* p = new LNode();
+			p->data = LA->data;
+			tail->next = p;
+			tail = p;
+			LA = LA->next;
+			LB = LB->next;
+		} else if(LA->data > LB->data){
+			LB = LB->next;
+		} else {
+			LA = LA->next;
+		}
+	}
+	tail->next = nullptr;
+}
+
+/*
+ * 15. 已知两个链表 A 和 B 分别表示两个集合，其元素递增排列，绘制函数，求 A 和 B 的交集，并存放于 A 链表中；
+ */
+void commonSet(LNode* &A, LNode* &B){
+	LNode* pre = A;
+	LNode* LA = A->next;
+	LNode* LB = B->next;
+	if(LA == nullptr || LB == nullptr){
+		A->next = nullptr;
+		return;
+	}
+	while(LA && LB){
+		if(LA->data == LB->data){
+			pre = LA;
+			LA = LA->next;
+			LB = LB->next;
+		} else if(LA->data > LB->data){
+			LB = LB->next;
+		} else {
+			LA = LA->next;
+			pre->next = LA;
+		}
+	}
+	pre->next = nullptr;
+}
+
+/*
+ * 16. 两个整数序列 A = a1, a2,...,an;和 B = b1, b2,...,bm; 已经存入两个单链表中，设计一个算法，判断序列 B 是否为序列 A 的子序列；
+ */
+bool isSubList(LNode* &B, LNode* &A){
+	LNode* LA = A->next;
+	LNode* p = LA;
+	LNode* LB = B->next;
+	if(LA == nullptr || LB == nullptr)	return 0;
+	while(p && LB){
+		if(p->data == LB->data){
+			p = p->next;
+			LB = LB->next;
+		} else {
+			LA = LA->next;
+			p = LA;
+			LB = B->next;
+		}
+	}
+	if(LB == nullptr){
+		return 1;
+	} else {
+		return 0;
+	}
+}
+/*
+ * 21. (2009) 带有头结点的单链表，查找链表中倒数第 k 个位置上的结点（k 为正整数）。若查找成功，输出该结点date域的值，并返回1；否则只返回0；
+ */
+int lastKthNode(LNode* head, int k){
+	if(head->next == nullptr || k > lengthOfLinkedList(head))	return 0;
+	LNode* p = head;
+	LNode* q = head;
+	while(--k){
+		q = q->next;
+	}
+	while(q->next != nullptr){
+		p = p->next;
+		q = q->next;
+	}
+	cout << p->data << endl;
+	return 1;
+}
+
 int main(){
 	LNode *head = NULL;
 	head = headInsert(head);
 	traverseLinkedList(head);
 	cout << "------------"<<endl;
+	cout << lastKthNode(head, 3) << endl;
+	cout << lastKthNode(head, 10) << endl;
+	// LNode *head1 = NULL;
+	// head1 = headInsert(head1);
+	// traverseLinkedList(head1);
+	// cout << "------------"<<endl;
+	// cout << isSubList(head, head1);
+	// LNode* C = new LNode();
+	// C->next = NULL;
+	// traverseLinkedList(C);
+	// commonNode(head, head1, C);
+	// traverseLinkedList(C);
+	// mergeList(head, head1);
+	// del_same(head);
 	// deleteX_1(head, 3);
 	// reverseOutput(head);
 	// deleteMin_1(head);
 	// reverseLinkedList(head);
 	// deleteXY(head, 2, 4);
 	// sortAndDelete(head);
-	LNode* B = createTwoList(head);
-	traverseLinkedList(head);
-	cout << "------------"<<endl;
-	traverseLinkedList(B);
+	// LNode* B = createTwoList(head);
+	// traverseLinkedList(head);
+	// cout << "------------"<<endl;
+	// traverseLinkedList(B);
 	// head = tailInsert(head);
 	// cout << getLNodeByIndex(head, 3)->data << endl;
 	// cout << getLNodeByValue(head, 3)->data << endl;
