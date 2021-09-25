@@ -89,10 +89,10 @@ int main(){
 	DNode* head;
 	head = headInsert(head);
 	traverseLinkedList(head);
-	DNode* p = Locate(head, 3);
-	DNode* p1 = Locate(head, 3);
-	DNode* p2 = Locate(head, 4);
-	traverseLinkedList(head);
+	// DNode* p = Locate(head, 3);
+	// DNode* p1 = Locate(head, 3);
+	// DNode* p2 = Locate(head, 4);
+	// traverseLinkedList(head);
 	return 0;
 }
 

@@ -568,13 +568,73 @@ int lastKthNode(LNode* head, int k){
 	return 1;
 }
 
+/*
+ * 22. (2012) 找到两个链表公共后缀的起始点
+ *     同 8.
+ */
+
+/*
+ * 23. 设计一个算法，判断一个链表是否有环，若有环，找到环的入口点并返回，若没有，返回NULL。
+ */
+LNode* isCircle(LNode* &head){
+	LNode* slow = head;
+	LNode* fast = head;
+	while(slow != nullptr && fast->next != nullptr){
+		slow = slow->next;
+		fast = fast->next->next;
+		if(slow == fast)	break;
+	}
+	if(slow == nullptr && fast->next == nullptr)	return nullptr;
+	LNode* p = slow;
+	LNode* q = head;
+	while(p != q){
+		p = p->next;
+		q = q->next;
+	}
+	return p;
+}
+
+/*
+ * 25. (2019) 设线性表 L = {a1,a2,...,an} 使用带头结点的单链表存储，设计一个空间复杂度为 O(1) 且在时间上尽可能高效的算法，重新排列得到 L1 = {a1,an,a2,an-1,...};
+ */
+void replace(LNode* &head){
+	LNode* p = head;
+	LNode* q = head;
+	while(q->next != nullptr){
+		p = p->next;
+		q = q->next;
+		if(q->next != nullptr)	q = q->next;
+	}
+	q = p->next;
+	p->next = nullptr;
+	LNode* r;
+	while(q != nullptr){
+		r = q->next;
+		q->next = p->next;
+		p->next = q;
+		q = r;
+	}
+	q = p->next;		// q 在上面循环跳出的条件为 nullptr，所以重新置为 p->next;
+	p->next = nullptr;
+	p = head->next;
+	while(q != nullptr){
+		r = q->next;
+		q->next = p->next;
+		p->next = q;
+		p = q->next;
+		q = r;
+	}
+}
+
 int main(){
 	LNode *head = NULL;
 	head = headInsert(head);
 	traverseLinkedList(head);
 	cout << "------------"<<endl;
-	cout << lastKthNode(head, 3) << endl;
-	cout << lastKthNode(head, 10) << endl;
+	replace(head);
+	traverseLinkedList(head);
+	// cout << lastKthNode(head, 3) << endl;
+	// cout << lastKthNode(head, 10) << endl;
 	// LNode *head1 = NULL;
 	// head1 = headInsert(head1);
 	// traverseLinkedList(head1);
