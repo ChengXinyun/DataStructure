@@ -348,7 +348,7 @@ void findX(SeqList &l, ElementType e){
  * 11.(2011统考真题) 一个长度为 L (L >= 1) 的升序序列 S，处在第[L / 2]个位置的数称为 S 的中位数。
  * 现有两个等长升序序列 A 和 B，设计一个在时间和空间两个方面都尽可能高效的算法找出A和B的中位数。 
  */ 
-
+// 方法差劲，需要改善！
 //时间复杂度 O(n), 空间复杂度 O(1);  
 int findMid_1(int a[], int b[], int length){
 	int i = 0;
