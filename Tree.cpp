@@ -227,5 +227,132 @@ Node* preInCreateTree(int num1[], int h1, int r1, int num2[], int h2, int r2){
  * 7. 判断一个二叉树是否为完全二叉树
  */ 
 bool ifFullTree(Node* root){
-    
+    if(root == nullptr){
+        return true;
+    }
+    queue<Node*> q;
+    Node* p;
+    q.push(root);
+    while(!q.empty()){
+        p = q.front();
+        q.pop();
+        if(p != nullptr){
+            q.push(p->left);
+            q.push(p->right);
+        } else {
+            while(!q.empty()){
+                if(q.front() != nullptr)    return false;
+                q.pop();
+            }
+        }
+    }
+    return true;
+}
+
+/*
+ * 8.计算一个给定二叉树的所有双分支结点的个数；
+ */ 
+int twoNodeSum(Node* root){
+    if(root == nullptr) return 0;
+    else if(root->left != nullptr && root->right != nullptr)   return 1 + twoNodeSum(root->right) + twoNodeSum(root->left);
+    else    return twoNodeSum(root->left) + twoNodeSum(root->right);
+}
+
+/*
+ * 9. 编写一个把树 B 中的所有结点的左、右子树进行行交换的函数；
+ */
+void swapLeftAndRight(Node* root){
+    if(root == nullptr) return;
+    else {
+        swapLeftAndRight(root->left);
+        swapLeftAndRight(root->right);
+        Node* p = root->left;
+        root->left = root->right;
+        root->right = p;
+        
+    }
+}
+
+/*
+ * 10. 求先序遍历序列中第 k 个结点的值；
+ */
+int cnt = 0;
+void preOrderOfKth(Node* root, int k){
+    if(root){
+        cnt++;
+        if(k == cnt){
+            cout << root->data << endl;
+            return;
+        }    
+        preOrderOfKth(root->left, k);
+        preOrderOfKth(root->right, k);
+    }
+}
+
+// 先序建立二叉树：10 6 4 0 0 8 0 0 14 12 0 0 0；
+void createBiTree(Node* &T)  
+{  
+    int data;
+    cin >> data;
+    if(data == 0){
+        T = nullptr;
+    } else {
+        T = new Node();
+        T->data = data;
+        T->left = T->right = nullptr;
+        createBiTree(T->left);
+        createBiTree(T->right);
+    }    
+}
+
+/*
+ * 11. 对于树中每个值为 x 的结点， 删除以它为根的子树，并且释放空间；
+ */
+// 删除以 root 为根结点的子树；
+void delNode(Node* root){
+    if(root){
+        delNode(root->left);
+        delNode(root->right);
+        delete root;
+    }
+}
+// 找结点值为 x 的结点；
+void search(Node* root, int x){
+    queue<Node*> q;
+    if(root){
+        if(root->data == x){
+            delNode(root);
+            return;
+        }
+        q.push(root);
+        Node* p;
+        while(!q.empty()){
+            p = q.front();
+            q.pop();
+            if(p->left){
+                if(p->left->data == x){
+                    delNode(p->left);
+                    p->left = nullptr;
+                } else {
+                    q.push(p->left);
+                }
+            } 
+            if(p->right){
+                if(p->right->data == x){
+                    delNode(p->right);
+                    p->right = nullptr;
+                } else {
+                    q.push(p->right);
+                }
+            } 
+        }
+    }
+}
+
+int main(){
+    Node* root;
+    createBiTree(root);
+    // preOrder(root);
+    // preOrderOfKth(root, 20);
+    return 0;
 }
