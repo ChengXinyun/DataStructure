@@ -349,9 +349,84 @@ void search(Node* root, int x){
     }
 }
 
+/*
+ * 12. 打印值为 x 的结点的所有祖先；(后序遍历)
+ */ 
+void findAnceOfX(Node* root, int x){
+    Node* pre = nullptr;
+    Node* p = root;
+    stack<Node*> s;
+    while(p || !s.empty()){
+        if(p){
+            s.push(p);
+            p = p->left;
+        } else {
+            p = s.top();
+            if(p->right && p->right != pre){
+                p = p->right;
+            } else {
+                s.pop();
+                if(p->data == x){
+                    while(!s.empty()){
+                        cout << s.top()->data<< endl;
+                        s.pop();
+                    }
+                    return;
+                }
+                pre = p;
+                p = nullptr;
+            }
+        }
+    }
+}
+
+/*
+ * 13. 找 p 和 q 的最近公共祖先结点 r；
+ *  或者利用后序遍历的特点，栈中元素都是当前元素的祖先。
+ */
+Node* lowestCommonAncestor(Node* root, Node* p, Node* q) {
+    if(root == NULL) return root; //树空返回root
+    if(root == p || root == q) return root; //找到p和q返回root
+    Node* lNode = lowestCommonAncestor(root->left,p,q);
+    Node* rNode = lowestCommonAncestor(root->right,p,q);
+    if(lNode != NULL && rNode != NULL) return root; //p，q分别在左右子树
+    else if(lNode == NULL) return rNode; //左边没有
+    else return lNode; //右边没有
+}
+
+/*
+ * 14. 求二叉树 B 的宽度；
+ */ 
+int widthOfTree(Node* root){
+    if(!root)   return 0;
+    queue<Node*> q;
+    q.push(root);
+    Node* p;
+    int cnt = 0;
+    int size = 1;
+    int width = INT_MIN;
+    while(!q.empty()){
+        width = max(size, width);
+        p = q.front();
+        q.pop();
+        if(p->left) q.push(p->left);
+        if(p->right)    q.push(p->right);
+        cnt++;
+        if(cnt == size){
+            cnt = 0;
+            size = q.size();
+        }
+    }
+    return width;
+}
+
+
+
 int main(){
     Node* root;
     createBiTree(root);
+    cout << widthOfTree(root);
+    // findAnceOfX(root, 8);
     // preOrder(root);
     // preOrderOfKth(root, 20);
     return 0;
