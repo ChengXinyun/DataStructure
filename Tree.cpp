@@ -420,12 +420,116 @@ int widthOfTree(Node* root){
     return width;
 }
 
+/*
+ * 15. 根据满二叉树的先序序列求其后序序列；
+ */
+void preToPost(int pre[], int h1, int r1, int post[], int h2, int r2){
+    int half;
+    if(h1 <= r1){
+        post[r2] = pre[h1];
+        half = (r1 - h1) / 2;
+        preToPost(pre, h1 + 1, h1 + half, post, h2, h2 + half - 1);
+        preToPost(pre, h1 + half + 1, r1, post, h2 + half, r2 - 1);
+    }
+}
 
+/*
+ * 16. 将二叉树中的叶子结点从左向右连成一个单链表；
+ */
+Node *head, *pre = nullptr;
+Node* InOrder(Node* root){
+    if(root){
+        InOrder(root->left);
+        if(root->left == nullptr && root->right == nullptr){
+            if(pre == nullptr){
+                head = root;
+                pre = root;
+            } else {
+                pre->right = root;
+                pre = root;
+            }
+        }
+        InOrder(root->right);
+        pre->right = nullptr;
+    }
+    return head;
+}
+
+/*
+ * 17. 判断两个二叉树是否相似；
+ */
+bool isSimilar(Node* root1, Node* root2){
+    if(root1 == nullptr && root2 == nullptr)    return true;
+    else if(root1 == nullptr || root2 == nullptr)   return false;
+    else    return isSimilar(root1->left, root2->left) && isSimilar(root1->right, root2->right);
+}
+
+/*
+ * 18. 查找中序线索二叉树里面指定结点在后序中的前驱结点；
+ */
+// Node* InPostPre(Node* root, Node* p){
+//     Node* q;
+//     if(p->rtag == 0){
+//         q = p->right;
+//     } else if(p->ltag == 0{
+//         q = p->left;
+//     } else if(p->left == nullptr){
+//         q = nullptr;
+//     } else {
+//         while(p->ltag == 1 && p->left != nullptr){
+//             p = p->left;
+//         }
+//         if(p->ltag == 0){
+//             q = p->left;
+//         } else {
+//             q = nullptr;
+//         }
+//     }
+//     return q;
+// }
+
+/*
+ * 19.（2014）求二叉树的带权路径长度；
+ */
+// 基于先序遍历；
+int wpl_helper(Node* root, int deep){
+    static int wpl = 0;
+    if(root->left == nullptr && root->right == nullptr){
+        wpl += deep * root->data;
+    } 
+    if(root->left != nullptr)   wpl_helper(root->left, deep + 1);
+    if(root->right != nullptr)  wpl_helper(root->right, deep + 1);
+    return wpl;
+}
+int WPL(Node* root){
+    return wpl_helper(root, 0);
+}
+
+/*
+ * 20.（2017）转化为中缀表达式；
+ */
+void Tree_helper(Node* root, int deep){
+    if(root == nullptr) return;
+    else if(root->left == nullptr && root->right == nullptr){
+        cout << root->data;
+    } else {
+        if(deep > 1)    cout << "(";
+        Tree_helper(root->left, deep + 1);
+        cout << root->data;
+        Tree_helper(root->right, deep + 1);
+        if(deep > 1)    cout << ")";
+    }
+}
+void TreeToExpre(Node* root){
+    Tree_helper(root, 1);
+}
 
 int main(){
     Node* root;
     createBiTree(root);
-    cout << widthOfTree(root);
+    TreeToExpre(root);
+    // cout << WPL(root) << endl;
+    // cout << widthOfTree(root);
     // findAnceOfX(root, 8);
     // preOrder(root);
     // preOrderOfKth(root, 20);
