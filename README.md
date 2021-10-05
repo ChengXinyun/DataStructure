@@ -8,3 +8,5 @@
     - 带头结点的循环单链表：[CycleLinkedList.cpp](https://github.com/ChengXinyun/DataStructure/blob/main/CycleLinkedList.cpp)
     - 带头结点的循环双链表：[CycleDoubleLinkedList.cpp](https://github.com/ChengXinyun/DataStructure/blob/main/CycleDoubleLinkedList.cpp)
 3. 排序算法: [Sort.cpp](https://github.com/ChengXinyun/DataStructure/blob/main/Sort.cpp)
+4. 字符串模式匹配：[KMP.cpp](https://github.com/ChengXinyun/DataStructure/blob/main/KMP.cpp)
+5. 树：[Tree.cpp](https://github.com/ChengXinyun/DataStructure/blob/main/Tree.cpp)
