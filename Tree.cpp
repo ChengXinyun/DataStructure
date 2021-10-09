@@ -524,10 +524,101 @@ void TreeToExpre(Node* root){
     Tree_helper(root, 1);
 }
 
+// 二叉排序树 BST 的插入；
+int BST_Insert(Node* &root, int key){
+    if(root == nullptr){
+        root = new Node();
+        root->data = key;
+        root->left = nullptr;
+        root->right = nullptr;
+        return 1;
+    } else if(root->data == key){
+        return 0;
+    } else if(root->data > key){
+        return BST_Insert(root->left, key);
+    } else {
+        return BST_Insert(root->right, key);
+    }
+} 
+
+// 判断一个二叉树是否是二叉排序树
+bool isBST(Node* root){
+    if(root == nullptr) return true;
+    else {
+        if(root->left == nullptr && root->right == nullptr){
+            return true;
+        } else if(root->left != nullptr && root->right != nullptr){
+            if(root->left->data < root->data && root->right->data > root->data)
+                return true && isBST(root->left) && isBST(root->right);
+            else 
+                return false;
+        } else if(root->left != nullptr && root->right == nullptr){
+            if(root->left->data < root->data)
+                return true && isBST(root->left);
+            else 
+                return false;
+        } else {
+            if(root->right->data > root->data)
+                return true && isBST(root->right);
+            else 
+                return false;
+        }
+    }
+}
+
+int p = INT_MIN;
+bool isBST_1(Node* root){
+    bool bl, br;
+    if(root == nullptr) return true;
+    else {
+        bl = isBST_1(root->left);
+        if(bl == false || root->data < p)
+            return false;
+        p = root->data;
+        br = isBST_1(root->right);
+        return br;
+    }
+}
+
+// 判断一棵二叉树是否为平衡二叉树
+int depth(Node* root){
+    if(root == nullptr) return 0;
+    return max(1 + depth(root->left), 1 + depth(root->right));
+}
+
+bool isAVL(Node* root){
+    if(root == nullptr) return true;
+    int dis = abs(depth(root->left) - depth(root->right));
+    if(dis < 2) return isAVL(root->left) && isAVL(root->right);
+    else    return false;
+}
+
+// 输出目标和的所有路径
+void dfs(Node* root, int target, stack<int> path){
+    if(root == nullptr) return;
+    target -= root->data;
+    path.push(root->data);
+    if(root->left == nullptr && root->right == nullptr && target == 0){
+        while(!path.empty()){
+            cout << path.top() << endl;
+            path.pop();
+        }
+        return;
+    }
+    dfs(root->left, target, path);
+    dfs(root->right, target, path);
+}
+
+
 int main(){
     Node* root;
     createBiTree(root);
-    TreeToExpre(root);
+    // cout << isBST(root);
+    // cout << isBST_1(root);
+    // cout << isAVL(root);
+    stack<int> path;
+    dfs(root, 35, path);
+    // TreeToExpre(root);
     // cout << WPL(root) << endl;
     // cout << widthOfTree(root);
     // findAnceOfX(root, 8);
